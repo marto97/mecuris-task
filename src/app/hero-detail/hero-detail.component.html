@@ -1,0 +1,17 @@
+<div *ngIf="hero">
+  <h2>{{hero.name | uppercase}} Details</h2>
+  <div><span>id: </span>{{hero.id}}</div>
+  <div>
+    <label for="hero-name">Item name: </label>
+    <input id="hero-name" [(ngModel)]="hero.name" placeholder="Item name"/>
+  </div>
+  <div>
+    <label for="hero-color">Item color: </label>
+    <input id="hero-color" [(ngModel)]="hero.color" placeholder="Item color"/>
+  </div>
+  <button (click)="goBack()">go back</button>
+  <button (click)="save()">save</button>
+
+  <app-product-preview [color]="hero.color"></app-product-preview>
+
+</div>

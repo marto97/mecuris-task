@@ -4,12 +4,12 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 
-import { Item } from './item';
+import { Item } from './hero';
 import { MessageService } from './message.service';
 
 
 @Injectable({ providedIn: 'root' })
-export class HeroService {
+export class ItemService {
 
   private heroesUrl = 'api/heroes';  // URL to web api
 
@@ -22,16 +22,16 @@ export class HeroService {
     private messageService: MessageService) { }
 
   /** GET heroes from the server */
-  getHeroes(): Observable<Item[]> {
+  getItems(): Observable<Item[]> {
     return this.http.get<Item[]>(this.heroesUrl)
       .pipe(
-        tap(_ => this.log('fetched items')),
+        tap(_ => this.log('fetched heroes')),
         catchError(this.handleError<Item[]>('getItems', []))
       );
   }
 
   /** GET hero by id. Return `undefined` when id not found */
-  getHeroNo404<Data>(id: number): Observable<Item> {
+  getItemNo404<Data>(id: number): Observable<Item> {
     const url = `${this.heroesUrl}/?id=${id}`;
     return this.http.get<Item[]>(url)
       .pipe(
@@ -40,21 +40,21 @@ export class HeroService {
           const outcome = h ? `fetched` : `did not find`;
           this.log(`${outcome} hero id=${id}`);
         }),
-        catchError(this.handleError<Item>(`getHero id=${id}`))
+        catchError(this.handleError<Item>(`getItem id=${id}`))
       );
   }
 
   /** GET hero by id. Will 404 if id not found */
-  getHero(id: number): Observable<Item> {
+  getItem(id: number): Observable<Item> {
     const url = `${this.heroesUrl}/${id}`;
     return this.http.get<Item>(url).pipe(
       tap(_ => this.log(`fetched hero id=${id}`)),
-      catchError(this.handleError<Item>(`getHero id=${id}`))
+      catchError(this.handleError<Item>(`getItem id=${id}`))
     );
   }
 
   /* GET heroes whose name contains search term */
-  searchHeroes(term: string): Observable<Item[]> {
+  searchItems(term: string): Observable<Item[]> {
     if (!term.trim()) {
       // if not search term, return empty hero array.
       return of([]);
@@ -63,35 +63,35 @@ export class HeroService {
       tap(x => x.length ?
          this.log(`found heroes matching "${term}"`) :
          this.log(`no heroes matching "${term}"`)),
-      catchError(this.handleError<Item[]>('searchHeroes', []))
+      catchError(this.handleError<Item[]>('searchItems', []))
     );
   }
 
   //////// Save methods //////////
 
   /** POST: add a new hero to the server */
-  addHero(hero: Item): Observable<Item> {
+  addItem(hero: Item): Observable<Item> {
     return this.http.post<Item>(this.heroesUrl, hero, this.httpOptions).pipe(
-      tap((newHero: Item) => this.log(`added hero w/ id=${newHero.id}`)),
-      catchError(this.handleError<Item>('addHero'))
+      tap((newItem: Item) => this.log(`added hero w/ id=${newItem.id}`)),
+      catchError(this.handleError<Item>('addItem'))
     );
   }
 
   /** DELETE: delete the hero from the server */
-  deleteHero(id: number): Observable<Item> {
+  deleteItem(id: number): Observable<Item> {
     const url = `${this.heroesUrl}/${id}`;
 
     return this.http.delete<Item>(url, this.httpOptions).pipe(
       tap(_ => this.log(`deleted hero id=${id}`)),
-      catchError(this.handleError<Item>('deleteHero'))
+      catchError(this.handleError<Item>('deleteItem'))
     );
   }
 
   /** PUT: update the hero on the server */
-  updateHero(hero: Item): Observable<any> {
+  updateItem(hero: Item): Observable<any> {
     return this.http.put(this.heroesUrl, hero, this.httpOptions).pipe(
       tap(_ => this.log(`updated hero id=${hero.id}`)),
-      catchError(this.handleError<any>('updateHero'))
+      catchError(this.handleError<any>('updateItem'))
     );
   }
 
@@ -115,8 +115,8 @@ export class HeroService {
     };
   }
 
-  /** Log a HeroService message with the MessageService */
+  /** Log a ItemService message with the MessageService */
   private log(message: string) {
-    this.messageService.add(`HeroService: ${message}`);
+    this.messageService.add(`ItemService: ${message}`);
   }
 }
